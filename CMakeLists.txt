@@ -38,9 +38,9 @@ else()
 endif()
 
 ## Uncomment for example
-add_executable(SerialPortTool main.cpp)
-add_dependencies(SerialPortTool serial)
-target_link_libraries(SerialPortTool serial)
+add_executable(${PROJECT_NAME} main.cpp)
+add_dependencies(${PROJECT_NAME} serial)
+target_link_libraries(${PROJECT_NAME} serial)
 
 ## Include headers
 include_directories(serial/include)
