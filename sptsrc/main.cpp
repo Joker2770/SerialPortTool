@@ -33,10 +33,13 @@
 
 int main(int argc, char *argv[])
 {
-	enumerate_ports();
+	my_serial_ctrl *pS = new my_serial_ctrl();
 
-	// port, baudrate, timeout in milliseconds
-	//serial::Serial my_serial(port, baud, serial::Timeout::simpleTimeout(1000));
+	pS->enumerate_ports();
+
+	pS->open_port("com3", 9600);
+	pS->my_sleep(2000);
+	pS->close_port();
 
 	return 0;
 }

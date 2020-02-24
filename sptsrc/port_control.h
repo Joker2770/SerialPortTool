@@ -32,7 +32,22 @@
 #ifndef __PORT_CONTROL_H__
 #define __PORT_CONTROL_H__
 
-void enumerate_ports();
+#include "serial/serial.h"
+
+class my_serial_ctrl {
+public:
+	my_serial_ctrl();
+	~my_serial_ctrl();
+
+	void enumerate_ports();
+	int open_port(const char* sPort, unsigned int iBaudrate);
+	int close_port();
+	void my_sleep(unsigned long milliseconds);
+
+private:
+	serial::Serial *my_serial;
+
+};
 
 #endif // __PORT_CONTROL_H__
 

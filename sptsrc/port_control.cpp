@@ -30,7 +30,6 @@
 */
 
 
-#include <string>
 #include "port_control.h"
 
 // OS Specific sleep
@@ -40,15 +39,29 @@
 #include <unistd.h>
 #endif
 
-#include "serial/serial.h"
-
-using std::string;
-using std::exception;
-using std::endl;
 using std::vector;
-using std::allocator;
+using std::exception;
 
-void enumerate_ports()
+my_serial_ctrl::my_serial_ctrl()
+{
+	this->my_serial = new serial::Serial();
+}
+
+my_serial_ctrl::~my_serial_ctrl()
+{
+	if (nullptr != this->my_serial) delete this->my_serial;
+}
+
+void my_serial_ctrl::my_sleep(unsigned long milliseconds) {
+#ifdef _WIN32
+	Sleep(milliseconds); // 100 ms
+#else
+	usleep(milliseconds * 1000); // 100 ms
+#endif
+}
+
+
+void my_serial_ctrl::enumerate_ports()
 {
 	vector<serial::PortInfo> devices_found = serial::list_ports();
 
@@ -61,5 +74,55 @@ void enumerate_ports()
 		i++;
 		printf("%d. Port - <%s>\n\tDescription: %s\n\tHardware_id: %s\n\n", i, device.port.c_str(), device.description.c_str(), device.hardware_id.c_str());
 	}
+}
+
+int my_serial_ctrl::open_port(const char* cszPort, unsigned int iBaud)
+{
+	this->my_serial->setPort(cszPort);
+	this->my_serial->setBaudrate(iBaud);
+	if (!my_serial->isOpen())
+	{
+		printf("[%s] is not open!\n", cszPort);
+
+		try {
+			this->my_serial->open();
+			printf("Open ...\n");
+		}
+		catch (exception &e) {
+			printf("Unhandled Exception: %s\n", e.what());
+		}
+
+		if (!this->my_serial->isOpen())
+		{
+			printf("[%s] open failed!\n", cszPort);
+			return -1;
+		}
+	}
+	printf("[%s] open succeed!\n", cszPort);
+	return 0;
+}
+
+int my_serial_ctrl::close_port()
+{
+	if (this->my_serial->isOpen())
+	{
+		printf("Port is open!\n");
+
+		try {
+			this->my_serial->close();
+			printf("Close ...\n");
+		}
+		catch (exception &e) {
+			printf("Unhandled Exception: %s\n", e.what());
+		}
+
+		if (this->my_serial->isOpen())
+		{
+			printf("Close port failed!\n");
+			return -1;
+		}
+	}
+	printf("Close port succeed!\n");
+	return 0;
 }
 

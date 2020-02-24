@@ -44,12 +44,10 @@ else()
 endif()
 
 ## SerialPortTool 
-set(IncludePath "${CMAKE_CURRENT_SOURCE_DIR}/src" "${CMAKE_CURRENT_SOURCE_DIR}/serial/include")
-file(GLOB SerialPortTool_SRCS "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
-
+file(GLOB SerialPortTool_SRCS "./sptsrc/*.cpp" "./sptsrc/*.h")
 add_executable(${PROJECT_NAME} ${SerialPortTool_SRCS})
 add_dependencies(${PROJECT_NAME} serial)
 target_link_libraries(${PROJECT_NAME} serial)
 
 ## Include headers
-include_directories(${IncludePath})
+include_directories(serial/include)
