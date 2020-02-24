@@ -1,4 +1,4 @@
-/*************************************************************************
+/************************************************************************
     > File Name: port_control.cpp
     > Author: Jintao Yang
     > Mail: 18608842770@163.com 
@@ -71,7 +71,7 @@ void my_serial_ctrl::enumerate_ports()
 	while (iter != devices_found.end())
 	{
 		serial::PortInfo device = *iter++;
-		i++;
+		i++; 
 		printf("%d. Port - <%s>\n\tDescription: %s\n\tHardware_id: %s\n\n", i, device.port.c_str(), device.description.c_str(), device.hardware_id.c_str());
 	}
 }
