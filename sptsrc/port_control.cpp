@@ -32,33 +32,50 @@
 
 #include "port_control.h"
 
-// OS Specific sleep
-#ifdef _WIN32
-#include <windows.h>
-#else
-#include <unistd.h>
-#endif
-
-#include <string.h>
-
-using std::vector;
-using std::exception;
+int AUX_split_str(string strSrc, STRVECTOR& vecDest, char cSep)
+{
+	//Current 'cSep' position and previous 'cSep' position. 
+	STRPOS pos = 0;
+	STRPOS prev_pos = 0;
+	//Search by turn. 
+	while ((pos = strSrc.find_first_of(cSep, pos)) != string::npos)
+	{
+		string strTemp = strSrc.substr(prev_pos, pos - prev_pos);
+		vecDest.push_back(strTemp);
+		prev_pos = ++pos;
+	}
+	//Even after 'cSep' is NULL, as a NULL string. 
+	if (!strSrc.empty())
+		vecDest.push_back(&strSrc[prev_pos]);
+	//Return the count of the string. 
+	return vecDest.size();
+}
 
 my_serial_ctrl::my_serial_ctrl()
 {
-	this->my_serial = new serial::Serial();
+	this->m_serial = new serial::Serial();
+	serial::Timeout timeout = serial::Timeout::simpleTimeout(1000);
+	this->m_serial->setTimeout(timeout);
 }
 
 my_serial_ctrl::~my_serial_ctrl()
 {
-	if (nullptr != this->my_serial) delete this->my_serial;
+	if (nullptr != this->m_serial) delete this->m_serial;
 }
 
-void my_serial_ctrl::my_sleep(unsigned long milliseconds) {
+// void my_serial_ctrl::my_sleep(unsigned long milliseconds) {
+// #ifdef _WIN32
+// 	Sleep(milliseconds); // 100 ms
+// #else
+// 	usleep(milliseconds * 1000); // 100 ms
+// #endif
+// }
+
+int my_stricmp(const char* str1, const char* str2) {
 #ifdef _WIN32
-	Sleep(milliseconds); // 100 ms
+	return _stricmp(str1, str2); // 100 ms
 #else
-	usleep(milliseconds * 1000); // 100 ms
+	return strcasecmp(str1, str2); // 100 ms
 #endif
 }
 
@@ -79,47 +96,53 @@ void my_serial_ctrl::enumerate_ports()
 	printf("Total %d ports could be connect. \n", i);
 }
 
-int my_serial_ctrl::open_port(const char* cszPort, unsigned int iBaud)
+int my_serial_ctrl::open_port()
 {
-	this->my_serial->setPort(cszPort);
-	this->my_serial->setBaudrate(iBaud);
-	if (!my_serial->isOpen())
+	char szPort[128] = "";
+	memset(szPort, 0, sizeof(szPort));
+	memcpy(szPort, this->m_serial->getPort().c_str(), 128);
+	if (0 == my_stricmp(szPort, ""))
 	{
-		printf("[%s] is not open! \n", cszPort);
+		printf("PORT can not be NULL! \n");
+		return -1;
+	}
+	if (!m_serial->isOpen())
+	{
+		printf("[%s] is not open! \n", szPort);
 
 		try {
-			this->my_serial->open();
+			this->m_serial->open();
 			printf("Open ...\n");
 		}
 		catch (exception &e) {
 			printf("Unhandled Exception: %s\n", e.what());
 		}
 
-		if (!this->my_serial->isOpen())
+		if (!this->m_serial->isOpen())
 		{
-			printf("[%s] open failed!\n", cszPort);
+			printf("[%s] open failed!\n", szPort);
 			return -1;
 		}
 	}
-	printf("[%s] open succeed!\n", cszPort);
+	printf("[%s] open succeed!\n", szPort);
 	return 0;
 }
 
 int my_serial_ctrl::close_port()
 {
-	if (this->my_serial->isOpen())
+	if (this->m_serial->isOpen())
 	{
 		printf("Port is open!\n");
 
 		try {
-			this->my_serial->close();
+			this->m_serial->close();
 			printf("Close ...\n");
 		}
 		catch (exception &e) {
 			printf("Unhandled Exception: %s\n", e.what());
 		}
 
-		if (this->my_serial->isOpen())
+		if (this->m_serial->isOpen())
 		{
 			printf("Close port failed!\n");
 			return -1;
@@ -132,14 +155,99 @@ int my_serial_ctrl::close_port()
 void my_serial_ctrl::show_port_set()
 {
 	printf("---------------------------------------------\n");
-	printf("\tPORT: %s\n\tBAUDRATE: %d\n\tBYTESIZE: %d\n\tPARITY: %d\n\tSTOPBITS: %d\n\tFLOWCONTROL: %d\n",
-		this->my_serial->getPort().c_str(),
-		this->my_serial->getBaudrate(),
-		this->my_serial->getBytesize(),
-		this->my_serial->getParity(),
-		this->my_serial->getStopbits(),
-		this->my_serial->getFlowcontrol()
+	printf("\tPORT: %s\n\tBAUDRATE: %u\n\tTIMEOUT: %u, %u, %u, %u, %u\n\tBYTESIZE: %d\n\tPARITY: %d\n\tSTOPBITS: %d\n\tFLOWCONTROL: %d\n",
+		this->m_serial->getPort().c_str(),
+		this->m_serial->getBaudrate(),
+		//Number of milliseconds between bytes received to timeout on. 
+		this->m_serial->getTimeout().inter_byte_timeout,
+		//A constant number of milliseconds to wait after calling read. 
+		this->m_serial->getTimeout().read_timeout_constant,
+		//A multiplier against the number of requested bytes to wait after calling read. 
+		this->m_serial->getTimeout().read_timeout_multiplier,
+		//A constant number of milliseconds to wait after calling write. 
+		this->m_serial->getTimeout().write_timeout_constant,
+		//A multiplier against the number of requested bytes to wait after calling write. 
+		this->m_serial->getTimeout().write_timeout_multiplier,
+		this->m_serial->getBytesize(),
+		this->m_serial->getParity(),
+		this->m_serial->getStopbits(),
+		this->m_serial->getFlowcontrol()
 	);
+	printf("\n(inter_byte_timeout, read_timeout_constant, read_timeout_multiplier, write_timeout_constant, write_timeout_multiplier)\n");
+	printf("(parity_none = 0, parity_odd = 1, parity_even = 2, parity_mark = 3, parity_space = 4)\n");
+	printf("(flowcontrol_none = 0, flowcontrol_software = 1, flowcontrol_hardware = 2)\n");
 	printf("---------------------------------------------\n");
 }
 
+int my_serial_ctrl::port_set(const char* szCommend, const char* szPara)
+{
+	if (nullptr == szCommend || nullptr == szPara || 0 == my_stricmp(szCommend, "") || 0 == my_stricmp(szPara, ""))
+	{
+		return -1;
+	}
+	if (0 == my_stricmp(szCommend, "SETPORT")) this->m_serial->setPort(std::string(szPara));
+	else if (0 == my_stricmp(szCommend, "SETBAUDRATE")) this->m_serial->setBaudrate(atol(szPara));
+	else if (0 == my_stricmp(szCommend, "SETTIMEOUT"))
+	{
+		STRVECTOR vDes;
+		AUX_split_str(string(szPara), vDes, ',');
+		if (5 != vDes.size())
+		{
+			printf("e.g.: SETTIMEOUT 10000,250,0,250,0\n");
+			return -1;
+		}
+		this->m_serial->setTimeout(atol(vDes[0].c_str()), atol(vDes[1].c_str()), atol(vDes[2].c_str()), atol(vDes[3].c_str()), atol(vDes[4].c_str()));
+	}
+	else if (0 == my_stricmp(szCommend, "SETBYTESIZE"))
+	{
+		if (5 > atoi(szPara) || 8 < atoi(szPara)) return -1;
+		this->m_serial->setBytesize((serial::bytesize_t)atoi(szPara));
+	}
+	else if (0 == my_stricmp(szCommend, "SETPARITY"))
+	{
+		if (0 > atoi(szPara) || 4 < atoi(szPara)) return -1;
+		this->m_serial->setParity((serial::parity_t)atoi(szPara));
+	}
+	else if (0 == my_stricmp(szCommend, "SETSTOPBITS"))
+	{
+		if (1 > atoi(szPara) || 3 < atoi(szPara)) return -1;
+		this->m_serial->setStopbits((serial::stopbits_t)atoi(szPara));
+	}
+	else if (0 == my_stricmp(szCommend, "SETFLOWCONTROL"))
+	{
+		if (0 > atoi(szPara) || 2 < atoi(szPara)) return -1;
+		this->m_serial->setFlowcontrol((serial::flowcontrol_t)atoi(szPara));
+	}
+	return 0;
+}
+
+int my_serial_ctrl::send_data(const char* szData)
+{
+	try
+	{
+		size_t bytes_wrote = this->m_serial->write(szData);
+		char szTmp[1024 * 100] = "";
+		memset(szTmp, 0, sizeof(szTmp));
+		memcpy(szTmp, szData, bytes_wrote);
+		printf(">>%s\n", szTmp);
+	}
+	catch (exception &e) {
+		printf("Unhandled Exception: %s\n", e.what());
+	}
+
+	return 0;
+}
+
+int my_serial_ctrl::receive_data(uint32_t ulength)
+{
+	try
+	{
+		string result = this->m_serial->read(ulength);
+		printf("<<%s\n", result.c_str());
+	}
+	catch (exception &e) {
+		printf("Unhandled Exception: %s\n", e.what());
+	}
+
+	return 0;
+}
