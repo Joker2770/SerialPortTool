@@ -11,7 +11,7 @@
 * Copyright (c) 2020 Joker2770
 * 
 * Permission is hereby granted, free of charge, to any person obtaining a copy
-* of this software and assvciated documentation files (the "Software"), to deal
+* of this software and associated documentation files (the "Software"), to deal
 * in the Software without restriction, including without limitation the rights
 * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 * copies of the Software, and to permit persons to whom the Software is
@@ -42,6 +42,7 @@ public:
 	void enumerate_ports();
 	int open_port(const char* sPort, unsigned int iBaudrate);
 	int close_port();
+	void show_port_set();
 	void my_sleep(unsigned long milliseconds);
 
 private:

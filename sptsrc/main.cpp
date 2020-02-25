@@ -11,7 +11,7 @@
 * Copyright (c) 2020 Joker2770
 * 
 * Permission is hereby granted, free of charge, to any person obtaining a copy
-* of this software and assvciated documentation files (the "Software"), to deal
+* of this software and associated documentation files (the "Software"), to deal
 * in the Software without restriction, including without limitation the rights
 * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 * copies of the Software, and to permit persons to whom the Software is
@@ -36,8 +36,10 @@ int main(int argc, char *argv[])
 	my_serial_ctrl *pS = new my_serial_ctrl();
 
 	pS->enumerate_ports();
+	pS->show_port_set();
 
-	pS->open_port("com3", 9600);
+	pS->open_port("com1", 9600);
+	pS->show_port_set();
 	pS->my_sleep(2000);
 	pS->close_port();
 

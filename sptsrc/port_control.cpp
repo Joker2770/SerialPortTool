@@ -11,7 +11,7 @@
 * Copyright (c) 2020 Joker2770
 * 
 * Permission is hereby granted, free of charge, to any person obtaining a copy
-* of this software and assvciated documentation files (the "Software"), to deal
+* of this software and associated documentation files (the "Software"), to deal
 * in the Software without restriction, including without limitation the rights
 * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 * copies of the Software, and to permit persons to whom the Software is
@@ -38,6 +38,8 @@
 #else
 #include <unistd.h>
 #endif
+
+#include <string.h>
 
 using std::vector;
 using std::exception;
@@ -74,6 +76,7 @@ void my_serial_ctrl::enumerate_ports()
 		i++; 
 		printf("%d. Port - <%s>\n\tDescription: %s\n\tHardware_id: %s\n\n", i, device.port.c_str(), device.description.c_str(), device.hardware_id.c_str());
 	}
+	printf("Total %d ports could be connect. \n", i);
 }
 
 int my_serial_ctrl::open_port(const char* cszPort, unsigned int iBaud)
@@ -82,7 +85,7 @@ int my_serial_ctrl::open_port(const char* cszPort, unsigned int iBaud)
 	this->my_serial->setBaudrate(iBaud);
 	if (!my_serial->isOpen())
 	{
-		printf("[%s] is not open!\n", cszPort);
+		printf("[%s] is not open! \n", cszPort);
 
 		try {
 			this->my_serial->open();
@@ -124,5 +127,19 @@ int my_serial_ctrl::close_port()
 	}
 	printf("Close port succeed!\n");
 	return 0;
+}
+
+void my_serial_ctrl::show_port_set()
+{
+	printf("---------------------------------------------\n");
+	printf("\tPORT: %s\n\tBAUDRATE: %d\n\tBYTESIZE: %d\n\tPARITY: %d\n\tSTOPBITS: %d\n\tFLOWCONTROL: %d\n",
+		this->my_serial->getPort().c_str(),
+		this->my_serial->getBaudrate(),
+		this->my_serial->getBytesize(),
+		this->my_serial->getParity(),
+		this->my_serial->getStopbits(),
+		this->my_serial->getFlowcontrol()
+	);
+	printf("---------------------------------------------\n");
 }
 
