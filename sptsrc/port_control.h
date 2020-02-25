@@ -34,21 +34,44 @@
 
 #include "serial/serial.h"
 
+// OS Specific sleep
+#ifdef _WIN32
+#include <windows.h>
+#else
+#include <unistd.h>
+#include <strings.h>
+#endif
+
+#include <string.h>
+#include <stdlib.h>
+
+
+using namespace std;
+typedef vector<string> STRVECTOR;
+typedef string::size_type STRPOS;
+
 class my_serial_ctrl {
 public:
 	my_serial_ctrl();
 	~my_serial_ctrl();
 
-	void enumerate_ports();
-	int open_port(const char* sPort, unsigned int iBaudrate);
-	int close_port();
-	void show_port_set();
-	void my_sleep(unsigned long milliseconds);
+	void enumerate_ports(void);
+	int open_port();
+	int close_port(void);
+	void show_port_set(void);
+	int port_set(const char* sArg1, const char* sArg2);
+	int send_data(const char* sData);
+	int receive_data(uint32_t sData);
+	//void my_sleep(unsigned long milliseconds);
 
 private:
-	serial::Serial *my_serial;
+	serial::Serial *m_serial;
 
 };
+
+
+int AUX_split_str(string strSrc, STRVECTOR& vecDest, char cSep);
+int my_stricmp(const char*, const char*);
 
 #endif // __PORT_CONTROL_H__
 
