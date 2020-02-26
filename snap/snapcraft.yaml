@@ -22,7 +22,8 @@
      - g++
      - make
      
-   environment:
-    plugin: copy
-    files:
-  
+   publish:
+    plugin: dump
+    organize:
+        /usr/local/bin/SerialPortTool: bin/SerialPortTool
+        
