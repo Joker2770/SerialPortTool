@@ -319,7 +319,7 @@ int my_serial_ctrl::send_data(const char* szData, bool b_hex)
 			size_t bytes_wrote = this->m_serial->write(szDest);
 			char szTmp[1024 * 100] = "";
 			memset(szTmp, 0, sizeof(szTmp));
-			memcpy(szTmp, szData, bytes_wrote);
+			memcpy(szTmp, szData, bytes_wrote*2);
 			printf(">>(hex)%s\n", szTmp);
 		}
 		else
