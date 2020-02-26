@@ -110,6 +110,8 @@ int main(int argc, char *argv[])
 				iret = pS->open_port();
 			else if (0 == my_stricmp(vDest[0].c_str(), "ClOSE"))
 				iret = pS->close_port();
+			else if (0 == my_stricmp(vDest[0].c_str(), "SHOWMORESET"))
+				pS->show_port_more_set();
 			else if (0 == my_stricmp(vDest[0].c_str(), "SHOWSET"))
 				pS->show_port_set();
 			else if (0 == my_stricmp(vDest[0].c_str(), "SHOWPORT"))

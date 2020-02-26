@@ -146,7 +146,7 @@ int my_serial_ctrl::open_port()
 		printf("PORT can not be NULL! \n");
 		return -1;
 	}
-	if (!m_serial->isOpen())
+	if (!this->m_serial->isOpen())
 	{
 		printf("[%s] is not open! \n", szPort);
 
@@ -218,6 +218,25 @@ void my_serial_ctrl::show_port_set()
 		//true == this->m_serial->getRI() ? 1 : 0
 	);
 	printf("---------------------------------------------\n");
+}
+
+int my_serial_ctrl::show_port_more_set()
+{
+	if (!this->m_serial->isOpen())
+	{
+		printf("Be sure to open port first!!!\n");
+		return -1;
+	}
+	printf("---------------------------------------------\n");
+	printf("\tCTS: %d\n\tDSR: %d\n\tCD: %d\n\tRI: %d\n",
+
+		true == this->m_serial->getCTS()?1:0,
+		true == this->m_serial->getDSR() ? 1 : 0,
+		true == this->m_serial->getCD() ? 1 : 0,
+		true == this->m_serial->getRI() ? 1 : 0
+	);
+	printf("---------------------------------------------\n");
+	return 0;
 }
 
 int my_serial_ctrl::port_set(const char* szCommend, const char* szPara)
