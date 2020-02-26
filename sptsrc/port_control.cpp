@@ -237,9 +237,9 @@ int my_serial_ctrl::port_set(const char* szCommend, const char* szPara)
 	{
 		STRVECTOR vDes;
 		AUX_split_str(string(szPara), vDes, ',');
-		if (5 != vDes.size())
+		if (0 == my_stricmp(szPara, "") || 5 != vDes.size())
 		{
-			printf("e.g.: SETTIMEOUT 10000,250,0,250,0\n");
+			printf("e.g.: SETTIMEOUT:10000,250,0,250,0\n");
 			return -1;
 		}
 		this->m_serial->setTimeout(atol(vDes[0].c_str()), atol(vDes[1].c_str()), atol(vDes[2].c_str()), atol(vDes[3].c_str()), atol(vDes[4].c_str()));

@@ -107,53 +107,52 @@ int main(int argc, char *argv[])
 		if (1 == vDest.size())
 		{
 			if (0 == my_stricmp(vDest[0].c_str(), "OPEN"))
-			{
 				iret = pS->open_port();
-			}
 			else if (0 == my_stricmp(vDest[0].c_str(), "ClOSE"))
-			{
 				iret = pS->close_port();
-			}
 			else if (0 == my_stricmp(vDest[0].c_str(), "SHOWSET"))
-			{
 				pS->show_port_set();
-			}
 			else if (0 == my_stricmp(vDest[0].c_str(), "SHOWPORT"))
-			{
 				pS->enumerate_ports();
-			}
 			else if (0 == my_stricmp(vDest[0].c_str(), "HELP"))
-			{
 				print_usage();
-			}
 			else if (0 == my_stricmp(vDest[0].c_str(), "exit") || 0 == my_stricmp(vDest[0].c_str(), "q") || 0 == my_stricmp(vDest[0].c_str(), "quit"))
-			{
 				break;
+			else if (0 == my_stricmp(vDest[0].c_str(), "SETTIMEOUT"))
+			{
+				printf("e.g.: SETTIMEOUT:10000,250,0,250,0\n");
+				continue;
+			}
+			else
+			{
+				printf("Command error!");
+				printf("\n");
 			}
 		}
 		else if (2 == vDest.size() && 0 != my_stricmp(vDest[0].c_str(), "") && 0 != my_stricmp(vDest[1].c_str(), ""))
 		{
 			if ((nullptr != strstr(vDest[0].c_str(), "SET")) || (nullptr != strstr(vDest[0].c_str(), "set")))
-			{
 				iret = pS->port_set(vDest[0].c_str(), vDest[1].c_str());
-			}
 			else if (0 == my_stricmp(vDest[0].c_str(), "WRITE"))
-			{
 				iret = pS->send_data(vDest[1].c_str());
-			}
 			else if (0 == my_stricmp(vDest[0].c_str(), "READ"))
-			{
 				iret = pS->receive_data(atol(vDest[1].c_str()));
-			}
 			else if (0 == my_stricmp(vDest[0].c_str(), "WRITEHEX"))
-			{
 				iret = pS->send_data(vDest[1].c_str(), true);
-			}
 			else if (0 == my_stricmp(vDest[0].c_str(), "READHEX"))
-			{
 				iret = pS->receive_data(atol(vDest[1].c_str()), true);
+			else
+			{
+				printf("Command error!");
+				printf("\n");
 			}
 		}
+		else
+		{
+			printf("Command error!");
+			printf("\n");
+		}
+
 	}
 
 	if (nullptr != pS) delete pS;
