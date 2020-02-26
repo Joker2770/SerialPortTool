@@ -50,6 +50,14 @@ void print_usage()
 	printf("\tSETFLOWCONTROL:<FLOWCONTROL>\n");
 	printf("\tWRITE:<DATA>\n");
 	printf("\tREAD:<DATALENGTH>\n");
+	printf("\tWRITEHEX:<DATA>\n");
+	printf("\tREADHEX:<DATALENGTH>\n");
+	printf("\tSETRTS:<0|1>\n");
+	printf("\tSETDTR:<0|1>\n");
+	printf("\tSETCD:<0|1>\n");
+	printf("\n(TIMEOUT:\n\tinter_byte_timeout, \n\tread_timeout_constant, \n\tread_timeout_multiplier, \n\twrite_timeout_constant, \n\twrite_timeout_multiplier\n)\n");
+	printf("(parity_none = 0, parity_odd = 1, parity_even = 2, parity_mark = 3, parity_space = 4)\n");
+	printf("(flowcontrol_none = 0, flowcontrol_software = 1, flowcontrol_hardware = 2)\n");
 	printf("===================command===================\n");
 }
 
@@ -59,12 +67,19 @@ int main(int argc, char *argv[])
 
 	if (1 < argc)
 	{
-		print_usage();
+		if (2 == argc && 0 == my_stricmp(argv[1], "--version"))
+		{
+			printf("20.20.02\n");
+			return 0;
+		}
+		else
+			print_usage();
 	}
 	else
 	{
 		pS->enumerate_ports();
 		pS->show_port_set();
+		printf("You can type 'HELP' to show usable commands!\n");
 	}
 
 
@@ -129,6 +144,14 @@ int main(int argc, char *argv[])
 			else if (0 == my_stricmp(vDest[0].c_str(), "READ"))
 			{
 				iret = pS->receive_data(atol(vDest[1].c_str()));
+			}
+			else if (0 == my_stricmp(vDest[0].c_str(), "WRITEHEX"))
+			{
+				iret = pS->send_data(vDest[1].c_str(), true);
+			}
+			else if (0 == my_stricmp(vDest[0].c_str(), "READHEX"))
+			{
+				iret = pS->receive_data(atol(vDest[1].c_str()), true);
 			}
 		}
 	}

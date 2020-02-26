@@ -60,8 +60,8 @@ public:
 	int close_port(void);
 	void show_port_set(void);
 	int port_set(const char* sArg1, const char* sArg2);
-	int send_data(const char* sData);
-	int receive_data(uint32_t sData);
+	int send_data(const char* sData, bool bHex = false);
+	int receive_data(uint32_t sData, bool bHex = false);
 	//void my_sleep(unsigned long milliseconds);
 
 private:
@@ -71,6 +71,8 @@ private:
 
 
 int AUX_split_str(string strSrc, STRVECTOR& vecDest, char cSep);
+void AUX_uti_unpack(unsigned char *pSrc, unsigned char *pDest, int len);
+void AUX_uti_pack(unsigned char *pSrc, unsigned char *pDest, int len);
 int my_stricmp(const char*, const char*);
 
 #endif // __PORT_CONTROL_H__

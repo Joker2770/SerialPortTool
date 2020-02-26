@@ -51,6 +51,51 @@ int AUX_split_str(string strSrc, STRVECTOR& vecDest, char cSep)
 	return vecDest.size();
 }
 
+/*
+	comment: data unpack, e.g.: 0x12 0xAC 0x0D -> "12AC0D"
+	para: 
+		pSrc: source string
+		pDest: destination string
+		len: count of character you will unpack of source string
+	caution: any string could be unpack.
+*/
+void AUX_uti_unpack(unsigned char *pSrc, unsigned char *pDest, int len)
+{
+	unsigned char ch1, ch2;
+	for (int i = 0; i < len; i++)
+	{
+		ch1 = (pSrc[i] & 0xF0) >> 4;
+		ch2 = pSrc[i] & 0x0F;
+		ch1 += ((ch1 > 9) ? 0x37 : 0x30);
+		ch2 += ((ch2 > 9) ? 0x37 : 0x30);
+		pDest[i * 2] = ch1;
+		pDest[i * 2 + 1] = ch2;
+	}
+}
+
+/*
+comment: data pack, e.g.: "12AC0D" -> 0x12 0xAC 0x0D
+para£º
+	pSrc: source string
+	pDest: destination string
+	len: count of character you will pack of destination string
+caution: only "0-9 a-z A-Z"
+*/
+void AUX_uti_pack(unsigned char *pSrc, unsigned char *pDest, int len)
+{
+	char  ch1, ch2;
+	for (int i = 0; i < (len / 2); i++)
+	{
+		ch1 = pSrc[i * 2];
+		ch2 = pSrc[i * 2 + 1];
+		(ch1 >= 'a' && ch1 <= 'z') ? (ch1 -= 32) : (ch1);
+		(ch2 >= 'a' && ch2 <= 'z') ? (ch2 -= 32) : (ch2);
+		ch1 -= ((ch1 > '9') ? 0x37 : 0x30);
+		ch2 -= ((ch2 > '9') ? 0x37 : 0x30);
+		pDest[i] = (ch1 << 4) | ch2;
+	}
+}
+
 my_serial_ctrl::my_serial_ctrl()
 {
 	this->m_serial = new serial::Serial();
@@ -172,10 +217,11 @@ void my_serial_ctrl::show_port_set()
 		this->m_serial->getParity(),
 		this->m_serial->getStopbits(),
 		this->m_serial->getFlowcontrol()
+		//true == this->m_serial->getCTS()?1:0,
+		//true == this->m_serial->getDSR() ? 1 : 0,
+		//true == this->m_serial->getCD() ? 1 : 0,
+		//true == this->m_serial->getRI() ? 1 : 0
 	);
-	printf("\n(inter_byte_timeout, read_timeout_constant, read_timeout_multiplier, write_timeout_constant, write_timeout_multiplier)\n");
-	printf("(parity_none = 0, parity_odd = 1, parity_even = 2, parity_mark = 3, parity_space = 4)\n");
-	printf("(flowcontrol_none = 0, flowcontrol_software = 1, flowcontrol_hardware = 2)\n");
 	printf("---------------------------------------------\n");
 }
 
@@ -218,10 +264,35 @@ int my_serial_ctrl::port_set(const char* szCommend, const char* szPara)
 		if (0 > atoi(szPara) || 2 < atoi(szPara)) return -1;
 		this->m_serial->setFlowcontrol((serial::flowcontrol_t)atoi(szPara));
 	}
+	else if (0 == my_stricmp(szCommend, "SETRTS"))
+	{
+		if (0 == atoi(szPara))
+			this->m_serial->setRTS(false);
+		else
+			this->m_serial->setRTS(true);
+	}
+	else if (0 == my_stricmp(szCommend, "SETDTR"))
+	{
+		if (0 == atoi(szPara))
+			this->m_serial->setDTR(false);
+		else
+			this->m_serial->setDTR(true);
+	}
+	else if (0 == my_stricmp(szCommend, "SETCD"))
+	{
+		if (0 == atoi(szPara))
+			this->m_serial->setBreak(false);
+		else
+			this->m_serial->setBreak(true);
+	}
+	else
+	{
+	}
+
 	return 0;
 }
 
-int my_serial_ctrl::send_data(const char* szData)
+int my_serial_ctrl::send_data(const char* szData, bool b_hex)
 {
 	try
 	{
@@ -229,7 +300,10 @@ int my_serial_ctrl::send_data(const char* szData)
 		char szTmp[1024 * 100] = "";
 		memset(szTmp, 0, sizeof(szTmp));
 		memcpy(szTmp, szData, bytes_wrote);
-		printf(">>%s\n", szTmp);
+		if (b_hex)
+			printf(">>(hex)%s\n", szTmp);
+		else
+			printf(">>(visual)%s\n", szTmp);
 	}
 	catch (exception &e) {
 		printf("Unhandled Exception: %s\n", e.what());
@@ -238,12 +312,20 @@ int my_serial_ctrl::send_data(const char* szData)
 	return 0;
 }
 
-int my_serial_ctrl::receive_data(uint32_t ulength)
+int my_serial_ctrl::receive_data(uint32_t ulength, bool b_hex)
 {
 	try
 	{
 		string result = this->m_serial->read(ulength);
-		printf("<<%s\n", result.c_str());
+		if (b_hex)
+		{
+			unsigned char szdest[1024 * 100] = "";
+			memset(szdest, 0, sizeof(szdest));
+			AUX_uti_unpack((unsigned char*)result.c_str(), szdest, strlen(result.c_str()));
+			printf("<<(hex)%s\n", szdest);
+		}
+		else
+			printf("<<(visual)%s\n", result.c_str());
 	}
 	catch (exception &e) {
 		printf("Unhandled Exception: %s\n", e.what());
