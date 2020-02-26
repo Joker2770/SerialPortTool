@@ -1,6 +1,10 @@
 # SerialPortTool
 A  Cross-platform serial test tool.
 
+##Dependencies
+Required:
+* [cmake](http://www.cmake.org) - buildsystem
+
 ## Build on Linux
 ~~~
 git clone https://github.com/Joker2770/SerialPortTool.git
