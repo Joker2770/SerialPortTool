@@ -1,7 +1,7 @@
 # SerialPortTool
 A  Cross-platform serial test tool.
 
-##Dependencies
+## Dependencies
 Required:
 * [cmake](http://www.cmake.org) - buildsystem
 
