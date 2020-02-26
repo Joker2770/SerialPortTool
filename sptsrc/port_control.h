@@ -71,9 +71,28 @@ private:
 
 
 int AUX_split_str(string strSrc, STRVECTOR& vecDest, char cSep);
-void AUX_uti_unpack(unsigned char *pSrc, unsigned char *pDest, int len);
-void AUX_uti_pack(unsigned char *pSrc, unsigned char *pDest, int len);
 int my_stricmp(const char*, const char*);
+
+/*
+	comment: HexToAscii, e.g.: 0x12 0xAC 0x0D -> "12AC0D"
+	para: 
+		pSrc(in): source string. 
+		pDest(out): destination string. 
+		nlen(in): count of characters of source string that you will deal with. 
+	caution: none. 
+*/
+void HexToAscii(unsigned char *pSrc, unsigned char *pDest, unsigned int nLen);
+
+/*
+comment: StringToHex, e.g.: "12AC0D" -> 0x12 0xAC 0x0D
+para£º
+	pSrc(in): source string. 
+	pDest(out): destination string. 
+	uilen(out): count of characters of destination string. 
+return: uilen. 
+caution: none. 
+*/
+int StringToHex(char *pSrc, unsigned char *pDest, unsigned int *uilen);
 
 #endif // __PORT_CONTROL_H__
 

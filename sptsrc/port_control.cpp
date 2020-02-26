@@ -51,49 +51,44 @@ int AUX_split_str(string strSrc, STRVECTOR& vecDest, char cSep)
 	return vecDest.size();
 }
 
-/*
-	comment: data unpack, e.g.: 0x12 0xAC 0x0D -> "12AC0D"
-	para: 
-		pSrc: source string
-		pDest: destination string
-		len: count of character you will unpack of source string
-	caution: any string could be unpack.
-*/
-void AUX_uti_unpack(unsigned char *pSrc, unsigned char *pDest, int len)
+void HexToAscii(unsigned char *pSrc, unsigned char *pDest, unsigned int nLen)
 {
-	unsigned char ch1, ch2;
-	for (int i = 0; i < len; i++)
-	{
-		ch1 = (pSrc[i] & 0xF0) >> 4;
-		ch2 = pSrc[i] & 0x0F;
-		ch1 += ((ch1 > 9) ? 0x37 : 0x30);
-		ch2 += ((ch2 > 9) ? 0x37 : 0x30);
-		pDest[i * 2] = ch1;
-		pDest[i * 2 + 1] = ch2;
-	}
+	unsigned char Nibble[2];
+	unsigned int i, j;
+	for (i = 0; i < nLen; i++) {
+		Nibble[0] = (pSrc[i] & 0xF0) >> 4;
+		Nibble[1] = pSrc[i] & 0x0F;
+		for (j = 0; j < 2; j++) {
+			if (Nibble[j] < 10) {
+				Nibble[j] += 0x30;
+			}
+			else {
+				if (Nibble[j] < 16)
+					Nibble[j] = Nibble[j] - 10 + 'A';
+			}
+			*pDest++ = Nibble[j];
+		}               // for (int j = ...)
+	}           // for (int i = ...)
 }
 
-/*
-comment: data pack, e.g.: "12AC0D" -> 0x12 0xAC 0x0D
-para£º
-	pSrc: source string
-	pDest: destination string
-	len: count of character you will pack of destination string
-caution: only "0-9 a-z A-Z"
-*/
-void AUX_uti_pack(unsigned char *pSrc, unsigned char *pDest, int len)
+int StringToHex(char *pSrc, unsigned char *pDest, unsigned int *uilen)
 {
-	char  ch1, ch2;
-	for (int i = 0; i < (len / 2); i++)
+	char *p = pSrc;
+	char high = 0, low = 0;
+	int tmplen = strlen(p), cnt = 0;
+	tmplen = strlen(p);
+	while (cnt < (tmplen / 2))
 	{
-		ch1 = pSrc[i * 2];
-		ch2 = pSrc[i * 2 + 1];
-		(ch1 >= 'a' && ch1 <= 'z') ? (ch1 -= 32) : (ch1);
-		(ch2 >= 'a' && ch2 <= 'z') ? (ch2 -= 32) : (ch2);
-		ch1 -= ((ch1 > '9') ? 0x37 : 0x30);
-		ch2 -= ((ch2 > '9') ? 0x37 : 0x30);
-		pDest[i] = (ch1 << 4) | ch2;
+		high = ((*p > '9') && ((*p <= 'F') || (*p <= 'f'))) ? *p - 48 - 7 : *p - 48;
+		low = (*(++p) > '9' && ((*p <= 'F') || (*p <= 'f'))) ? *(p)-48 - 7 : *(p)-48;
+		pDest[cnt] = ((high & 0x0f) << 4 | (low & 0x0f));
+		p++;
+		cnt++;
 	}
+	if (tmplen % 2 != 0) pDest[cnt] = ((*p > '9') && ((*p <= 'F') || (*p <= 'f'))) ? *p - 48 - 7 : *p - 48;
+
+	if (uilen != NULL) *uilen = tmplen / 2 + tmplen % 2;
+	return tmplen / 2 + tmplen % 2;
 }
 
 my_serial_ctrl::my_serial_ctrl()
@@ -296,14 +291,26 @@ int my_serial_ctrl::send_data(const char* szData, bool b_hex)
 {
 	try
 	{
-		size_t bytes_wrote = this->m_serial->write(szData);
-		char szTmp[1024 * 100] = "";
-		memset(szTmp, 0, sizeof(szTmp));
-		memcpy(szTmp, szData, bytes_wrote);
+		char szDest[1024 * 100] = "";
+		memset(szDest, 0, sizeof(szDest));
+		uint32_t ilen = 0;
 		if (b_hex)
+		{
+			StringToHex((char*)szData, (unsigned char*)szDest, &ilen);
+			size_t bytes_wrote = this->m_serial->write(szDest);
+			char szTmp[1024 * 100] = "";
+			memset(szTmp, 0, sizeof(szTmp));
+			memcpy(szTmp, szData, bytes_wrote);
 			printf(">>(hex)%s\n", szTmp);
+		}
 		else
+		{
+			size_t bytes_wrote = this->m_serial->write(szData);
+			char szTmp[1024 * 100] = "";
+			memset(szTmp, 0, sizeof(szTmp));
+			memcpy(szTmp, szData, bytes_wrote);
 			printf(">>(visual)%s\n", szTmp);
+		}
 	}
 	catch (exception &e) {
 		printf("Unhandled Exception: %s\n", e.what());
@@ -321,7 +328,7 @@ int my_serial_ctrl::receive_data(uint32_t ulength, bool b_hex)
 		{
 			unsigned char szdest[1024 * 100] = "";
 			memset(szdest, 0, sizeof(szdest));
-			AUX_uti_unpack((unsigned char*)result.c_str(), szdest, strlen(result.c_str()));
+			HexToAscii((unsigned char*)result.c_str(), szdest, result.length());
 			printf("<<(hex)%s\n", szdest);
 		}
 		else
