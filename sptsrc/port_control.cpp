@@ -301,6 +301,7 @@ int my_serial_ctrl::port_set(const char* szCommend, const char* szPara)
 	}
 	else
 	{
+		printf("Unsupported command!\n");
 	}
 
 	return 0;
