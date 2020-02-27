@@ -280,24 +280,45 @@ int my_serial_ctrl::port_set(const char* szCommend, const char* szPara)
 	}
 	else if (0 == my_stricmp(szCommend, "SETRTS"))
 	{
-		if (0 == atoi(szPara))
-			this->m_serial->setRTS(false);
-		else
-			this->m_serial->setRTS(true);
+		//Must be open port first.
+		try
+		{
+			if (0 == atoi(szPara))
+				this->m_serial->setRTS(false);
+			else
+				this->m_serial->setRTS(true);
+		}
+		catch (exception &e) {
+			printf("Unhandled Exception: %s\n", e.what());
+		}
 	}
 	else if (0 == my_stricmp(szCommend, "SETDTR"))
 	{
-		if (0 == atoi(szPara))
-			this->m_serial->setDTR(false);
-		else
-			this->m_serial->setDTR(true);
+		//Must be open port first.
+		try
+		{
+			if (0 == atoi(szPara))
+				this->m_serial->setDTR(false);
+			else
+				this->m_serial->setDTR(true);
+		}
+		catch (exception &e) {
+			printf("Unhandled Exception: %s\n", e.what());
+		}
 	}
-	else if (0 == my_stricmp(szCommend, "SETCD"))
+	else if (0 == my_stricmp(szCommend, "SETBREAK"))
 	{
-		if (0 == atoi(szPara))
-			this->m_serial->setBreak(false);
-		else
-			this->m_serial->setBreak(true);
+		//Must be open port first.
+		try
+		{
+			if (0 == atoi(szPara))
+				this->m_serial->setBreak(false);
+			else
+				this->m_serial->setBreak(true);
+		}
+		catch (exception &e) {
+			printf("Unhandled Exception: %s\n", e.what());
+		}
 	}
 	else
 	{

@@ -50,7 +50,7 @@ void print_usage()
 	printf("\tSETFLOWCONTROL:<FLOWCONTROL>\n");
 	printf("\tSETRTS:<0|1> (e.g.: SETRTS:1)\n");
 	printf("\tSETDTR:<0|1>\n");
-	printf("\tSETCD:<0|1>\n");
+	printf("\tSETBREAK:<0|1>\n");
 	printf("\tWRITE:<DATA>\n");
 	printf("\tREAD:<DATALENGTH>\n");
 	printf("\tWRITEHEX:<DATA> (e.g.: WRITEHEX:313233)\n");
