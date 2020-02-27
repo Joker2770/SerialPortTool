@@ -52,4 +52,3 @@ target_link_libraries(${PROJECT_NAME} serial)
 ## Include headers
 include_directories(serial/include)
 
-install(TARGETS SerialPortTool DESTINATION bin)
