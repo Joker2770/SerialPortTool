@@ -9,28 +9,30 @@
 
  grade: stable # must be 'stable' to release into candidate/stable channels
  confinement: strict # use 'strict' once you have the right plugs and slots
- base: "core18"
+ base: core18
 
  apps:
    serialporttool:
-     command: bin/SerialPortTool
-    
+    command: bin/SerialPortTool
+    plugs: [serial-port]
+      
  parts:
    serialporttool:
     # See 'snapcraft plugins'
     plugin: cmake
     source: "https://github.com/Joker2770/SerialPortTool.git"
+    # source: ../
     source-depth: 1
     source-branch: master
     source-type: git
     build-packages:
-     - cmake
      - gcc
      - g++
+     - cmake
      - make
      
-   publish:
-    plugin: dump
-    organize:
-        /usr/local/bin/SerialPortTool: bin/SerialPortTool
-        
+   # publish:
+    # plugin: dump
+    # organize:
+        # ./bin/SerialPortTool: bin/SerialPortTool
+     
