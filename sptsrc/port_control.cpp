@@ -144,6 +144,7 @@ int my_serial_ctrl::open_port()
 	if (0 == my_stricmp(szPort, ""))
 	{
 		printf("PORT can not be NULL! \n");
+		printf("Please set port number first! (e.g.: SETPORT:COM1)\n");
 		return -1;
 	}
 	if (!this->m_serial->isOpen())
@@ -260,22 +261,38 @@ int my_serial_ctrl::port_set(const char* szCommend, const char* szPara)
 	}
 	else if (0 == my_stricmp(szCommend, "SETBYTESIZE"))
 	{
-		if (5 > atoi(szPara) || 8 < atoi(szPara)) return -1;
+		if (5 > atoi(szPara) || 8 < atoi(szPara))
+		{
+			printf("Parameter error\n");
+			return -1;
+		}
 		this->m_serial->setBytesize((serial::bytesize_t)atoi(szPara));
 	}
 	else if (0 == my_stricmp(szCommend, "SETPARITY"))
 	{
-		if (0 > atoi(szPara) || 4 < atoi(szPara)) return -1;
+		if (0 > atoi(szPara) || 4 < atoi(szPara))
+		{
+			printf("Parameter error\n");
+			return -1;
+		}
 		this->m_serial->setParity((serial::parity_t)atoi(szPara));
 	}
 	else if (0 == my_stricmp(szCommend, "SETSTOPBITS"))
 	{
-		if (1 > atoi(szPara) || 3 < atoi(szPara)) return -1;
+		if (1 > atoi(szPara) || 3 < atoi(szPara))
+		{
+			printf("Parameter error\n");
+			return -1;
+		}
 		this->m_serial->setStopbits((serial::stopbits_t)atoi(szPara));
 	}
 	else if (0 == my_stricmp(szCommend, "SETFLOWCONTROL"))
 	{
-		if (0 > atoi(szPara) || 2 < atoi(szPara)) return -1;
+		if (0 > atoi(szPara) || 2 < atoi(szPara))
+		{
+			printf("Parameter error\n");
+			return -1;
+		}
 		this->m_serial->setFlowcontrol((serial::flowcontrol_t)atoi(szPara));
 	}
 	else if (0 == my_stricmp(szCommend, "SETRTS"))
