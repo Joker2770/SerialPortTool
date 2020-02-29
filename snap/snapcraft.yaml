@@ -6,7 +6,6 @@
    A simple command-line Cross-platform serial test tool, create by Joker2770<https://github.com/Joker2770/SerialPortTool>.
 
  icon: icon.png
- title: serialporttool_20.20.02
 
  grade: stable # must be 'stable' to release into candidate/stable channels
  confinement: strict # use 'strict' once you have the right plugs and slots
