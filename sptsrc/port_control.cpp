@@ -71,24 +71,40 @@ void HexToAscii(unsigned char *pSrc, unsigned char *pDest, unsigned int nLen)
 	}           // for (int i = ...)
 }
 
-int StringToHex(char *pSrc, unsigned char *pDest, unsigned int *uilen)
+int StringToHex(char *pSrc, unsigned char *cbuf, unsigned int* nlen)
 {
-	char *p = pSrc;
-	char high = 0, low = 0;
-	int tmplen = strlen(p), cnt = 0;
-	tmplen = strlen(p);
-	while (cnt < (tmplen / 2))
-	{
-		high = ((*p > '9') && ((*p <= 'F') || (*p <= 'f'))) ? *p - 48 - 7 : *p - 48;
-		low = (*(++p) > '9' && ((*p <= 'F') || (*p <= 'f'))) ? *(p)-48 - 7 : *(p)-48;
-		pDest[cnt] = ((high & 0x0f) << 4 | (low & 0x0f));
-		p++;
-		cnt++;
-	}
-	if (tmplen % 2 != 0) pDest[cnt] = ((*p > '9') && ((*p <= 'F') || (*p <= 'f'))) ? *p - 48 - 7 : *p - 48;
+	*nlen = 0;
 
-	if (uilen != NULL) *uilen = tmplen / 2 + tmplen % 2;
-	return tmplen / 2 + tmplen % 2;
+	unsigned char high, low;
+	int idx, ii = 0;
+	int itlen = strlen(pSrc) - (strlen(pSrc) % 2);
+	for (idx = 0; idx < itlen; idx += 2)
+	{
+		high = pSrc[idx];
+		low = pSrc[idx + 1];
+
+		if (high >= '0' && high <= '9')
+			high = high - '0';
+		else if (high >= 'A' && high <= 'F')
+			high = high - 'A' + 10;
+		else if (high >= 'a' && high <= 'f')
+			high = high - 'a' + 10;
+		else
+			return -1;
+
+		if (low >= '0' && low <= '9')
+			low = low - '0';
+		else if (low >= 'A' && low <= 'F')
+			low = low - 'A' + 10;
+		else if (low >= 'a' && low <= 'f')
+			low = low - 'a' + 10;
+		else
+			return -1;
+
+		cbuf[ii++] = high << 4 | low;
+	}
+	*nlen = strlen(pSrc) / 2;
+	return 0;
 }
 
 my_serial_ctrl::my_serial_ctrl()
@@ -349,13 +365,18 @@ int my_serial_ctrl::send_data(const char* szData, bool b_hex)
 {
 	try
 	{
-		char szDest[1024 * 100] = "";
+		unsigned char szDest[1024 * 100] = "";
 		memset(szDest, 0, sizeof(szDest));
 		uint32_t ilen = 0;
 		if (b_hex)
 		{
-			StringToHex((char*)szData, (unsigned char*)szDest, &ilen);
-			size_t bytes_wrote = this->m_serial->write(szDest);
+			int iret = StringToHex((char*)szData, szDest, &ilen);
+			if (0 != iret)
+				throw - 1;
+			string sdes = "";
+			for (size_t i = 0; i < ilen; i++)
+				sdes += szDest[i];
+			size_t bytes_wrote = this->m_serial->write(sdes);
 			char szTmp[1024 * 100] = "";
 			memset(szTmp, 0, sizeof(szTmp));
 			memcpy(szTmp, szData, bytes_wrote*2);
@@ -372,6 +393,13 @@ int my_serial_ctrl::send_data(const char* szData, bool b_hex)
 	}
 	catch (exception &e) {
 		printf("Unhandled Exception: %s\n", e.what());
+	}
+	catch (int erret)
+	{
+		if (-1 == erret)
+		{
+			printf("Internal error!");
+		}
 	}
 
 	return 0;
