@@ -409,16 +409,30 @@ int my_serial_ctrl::receive_data(uint32_t ulength, bool b_hex)
 {
 	try
 	{
-		string result = this->m_serial->read(ulength);
+		unsigned char result[1024 * 100] = "";
+		memset(result, 0, sizeof(result));
+		size_t r_size = this->m_serial->read(result, ulength);
 		if (b_hex)
 		{
 			unsigned char szdest[1024 * 100] = "";
 			memset(szdest, 0, sizeof(szdest));
-			HexToAscii((unsigned char*)result.c_str(), szdest, result.length());
+			unsigned char szdestmp[1024 * 100] = "";
+			memset(szdestmp, 0, sizeof(szdestmp));
+			for (size_t i = 0; i < r_size; i++)
+				szdestmp[i]= result[i];
+			HexToAscii(szdestmp, szdest, r_size);
 			printf("<<(hex)%s\n", szdest);
 		}
 		else
-			printf("<<(visual)%s\n", result.c_str());
+		{
+			// Assume non-printable character inside.
+			printf("<<(visual)");
+			for (size_t i = 0; i < r_size; i++)
+			{
+				printf("%c", result[i]);
+			}
+			printf("\n");
+		}
 	}
 	catch (exception &e) {
 		printf("Unhandled Exception: %s\n", e.what());
