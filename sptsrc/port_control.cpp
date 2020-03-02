@@ -373,10 +373,7 @@ int my_serial_ctrl::send_data(const char* szData, bool b_hex)
 			int iret = StringToHex((char*)szData, szDest, &ilen);
 			if (0 != iret)
 				throw - 1;
-			string sdes = "";
-			for (size_t i = 0; i < ilen; i++)
-				sdes += szDest[i];
-			size_t bytes_wrote = this->m_serial->write(sdes);
+			size_t bytes_wrote = this->m_serial->write(szDest, ilen);
 			char szTmp[1024 * 100] = "";
 			memset(szTmp, 0, sizeof(szTmp));
 			memcpy(szTmp, szData, bytes_wrote*2);
@@ -409,18 +406,14 @@ int my_serial_ctrl::receive_data(uint32_t ulength, bool b_hex)
 {
 	try
 	{
-		unsigned char result[1024 * 100] = "";
+		uint8_t result[1024 * 100] = "";
 		memset(result, 0, sizeof(result));
 		size_t r_size = this->m_serial->read(result, ulength);
 		if (b_hex)
 		{
 			unsigned char szdest[1024 * 100] = "";
 			memset(szdest, 0, sizeof(szdest));
-			unsigned char szdestmp[1024 * 100] = "";
-			memset(szdestmp, 0, sizeof(szdestmp));
-			for (size_t i = 0; i < r_size; i++)
-				szdestmp[i]= result[i];
-			HexToAscii(szdestmp, szdest, r_size);
+			HexToAscii(result, szdest, r_size);
 			printf("<<(hex)%s\n", szdest);
 		}
 		else
