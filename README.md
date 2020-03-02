@@ -4,8 +4,8 @@ A  Cross-platform serial test tool.
 ## Dependencies
 Required:
 * [cmake](http://www.cmake.org) - buildsystem
-* g++ (>= 7.4.0 recommend)
-* gcc (>= 7.4.0 recommend)
+* g++ (>= 7.4.0 recommended)
+* gcc (>= 7.4.0 recommended)
 
 ## Build on Linux
 ~~~

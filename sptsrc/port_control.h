@@ -91,7 +91,7 @@ para£º
 	pDest(out): destination string. 
 	uilen(out): count of characters of destination string. 
 return: uilen. 
-caution: none. 
+caution: The source string only '0-9 a-z A-Z' include, that is can not include '~%$#.,/][\*...', etc. inside the source string. 
 */
 int StringToHex(char *pSrc, unsigned char *pDest, unsigned int *uilen);
 

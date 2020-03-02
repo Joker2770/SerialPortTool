@@ -229,10 +229,6 @@ void my_serial_ctrl::show_port_set()
 		this->m_serial->getParity(),
 		this->m_serial->getStopbits(),
 		this->m_serial->getFlowcontrol()
-		//true == this->m_serial->getCTS()?1:0,
-		//true == this->m_serial->getDSR() ? 1 : 0,
-		//true == this->m_serial->getCD() ? 1 : 0,
-		//true == this->m_serial->getRI() ? 1 : 0
 	);
 	printf("---------------------------------------------\n");
 }
