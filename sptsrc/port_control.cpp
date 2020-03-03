@@ -37,14 +37,14 @@ int AUX_split_str(string strSrc, STRVECTOR& vecDest, char cSep)
 	//Current 'cSep' position and previous 'cSep' position. 
 	STRPOS pos = 0;
 	STRPOS prev_pos = 0;
-	//Search by turn. 
+	//Search one by one. 
 	while ((pos = strSrc.find_first_of(cSep, pos)) != string::npos)
 	{
 		string strTemp = strSrc.substr(prev_pos, pos - prev_pos);
 		vecDest.push_back(strTemp);
 		prev_pos = ++pos;
 	}
-	//Even after 'cSep' is NULL, as a NULL string. 
+	//Even behind 'cSep' is NULL, as a NULL string. 
 	if (!strSrc.empty())
 		vecDest.push_back(&strSrc[prev_pos]);
 	//Return the count of the string. 
@@ -77,7 +77,7 @@ int StringToHex(char *pSrc, unsigned char *cbuf, unsigned int* nlen)
 
 	unsigned char high, low;
 	int idx, ii = 0;
-	int itlen = strlen(pSrc) - (strlen(pSrc) % 2);
+	unsigned int itlen = (unsigned int)(strlen(pSrc) - (strlen(pSrc) % 2));
 	for (idx = 0; idx < itlen; idx += 2)
 	{
 		high = pSrc[idx];
@@ -103,7 +103,7 @@ int StringToHex(char *pSrc, unsigned char *cbuf, unsigned int* nlen)
 
 		cbuf[ii++] = high << 4 | low;
 	}
-	*nlen = strlen(pSrc) / 2;
+	*nlen = (unsigned int)(strlen(pSrc) / 2);
 	return 0;
 }
 
@@ -119,7 +119,7 @@ my_serial_ctrl::~my_serial_ctrl()
 	if (nullptr != this->m_serial) delete this->m_serial;
 }
 
-// void my_serial_ctrl::my_sleep(unsigned long milliseconds) {
+// void my_sleep(unsigned long milliseconds) {
 // #ifdef _WIN32
 // 	Sleep(milliseconds); // 100 ms
 // #else

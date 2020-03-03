@@ -126,10 +126,7 @@ int main(int argc, char *argv[])
 				continue;
 			}
 			else
-			{
-				printf("Command error!");
-				printf("\n");
-			}
+				printf("Command error!\n");
 		}
 		else if (2 == vDest.size() && 0 != my_stricmp(vDest[0].c_str(), "") && 0 != my_stricmp(vDest[1].c_str(), ""))
 		{
@@ -144,16 +141,10 @@ int main(int argc, char *argv[])
 			else if (0 == my_stricmp(vDest[0].c_str(), "READHEX"))
 				iret = pS->receive_data(atol(vDest[1].c_str()), true);
 			else
-			{
-				printf("Command error!");
-				printf("\n");
-			}
+				printf("Command error!\n");
 		}
 		else
-		{
-			printf("Command error!");
-			printf("\n");
-		}
+			printf("Command error!\n");
 
 	}
 
