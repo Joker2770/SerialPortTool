@@ -391,7 +391,7 @@ int my_serial_ctrl::send_data(const char* szData, bool b_hex)
 	{
 		if (-1 == erret)
 		{
-			printf("Internal error!");
+			printf("Internal error!\n");
 		}
 	}
 
