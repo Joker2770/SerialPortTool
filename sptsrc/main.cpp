@@ -87,15 +87,15 @@ int main(int argc, char *argv[])
 	while (true)
 	{
 		printf(">>");
-		char szCommend[128] = "";
-		memset(szCommend, 0, sizeof(szCommend));
+		char szCommand[128] = "";
+		memset(szCommand, 0, sizeof(szCommand));
 
 		try
 		{
 			#if defined(_WIN32) && !defined(__MINGW32__)
-				iret = scanf_s("%s", szCommend, 128);
+				iret = scanf_s("%s", szCommand, 128);
 			#else
-				iret = scanf("%s", szCommend);
+				iret = scanf("%s", szCommand);
 			#endif
 		}
 		catch (exception &e) {
@@ -103,7 +103,7 @@ int main(int argc, char *argv[])
 		}
 
 		STRVECTOR vDest;
-		AUX_split_str(string(szCommend), vDest, ':');
+		AUX_split_str(string(szCommand), vDest, ':');
 		if (1 == vDest.size())
 		{
 			if (0 == my_stricmp(vDest[0].c_str(), "OPEN"))

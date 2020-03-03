@@ -252,15 +252,15 @@ int my_serial_ctrl::show_port_more_set()
 	return 0;
 }
 
-int my_serial_ctrl::port_set(const char* szCommend, const char* szPara)
+int my_serial_ctrl::port_set(const char* szCommand, const char* szPara)
 {
-	if (nullptr == szCommend || nullptr == szPara || 0 == my_stricmp(szCommend, "") || 0 == my_stricmp(szPara, ""))
+	if (nullptr == szCommand || nullptr == szPara || 0 == my_stricmp(szCommand, "") || 0 == my_stricmp(szPara, ""))
 	{
 		return -1;
 	}
-	if (0 == my_stricmp(szCommend, "SETPORT")) this->m_serial->setPort(std::string(szPara));
-	else if (0 == my_stricmp(szCommend, "SETBAUDRATE")) this->m_serial->setBaudrate(atol(szPara));
-	else if (0 == my_stricmp(szCommend, "SETTIMEOUT"))
+	if (0 == my_stricmp(szCommand, "SETPORT")) this->m_serial->setPort(std::string(szPara));
+	else if (0 == my_stricmp(szCommand, "SETBAUDRATE")) this->m_serial->setBaudrate(atol(szPara));
+	else if (0 == my_stricmp(szCommand, "SETTIMEOUT"))
 	{
 		STRVECTOR vDes;
 		AUX_split_str(string(szPara), vDes, ',');
@@ -271,7 +271,7 @@ int my_serial_ctrl::port_set(const char* szCommend, const char* szPara)
 		}
 		this->m_serial->setTimeout(atol(vDes[0].c_str()), atol(vDes[1].c_str()), atol(vDes[2].c_str()), atol(vDes[3].c_str()), atol(vDes[4].c_str()));
 	}
-	else if (0 == my_stricmp(szCommend, "SETBYTESIZE"))
+	else if (0 == my_stricmp(szCommand, "SETBYTESIZE"))
 	{
 		if (5 > atoi(szPara) || 8 < atoi(szPara))
 		{
@@ -280,7 +280,7 @@ int my_serial_ctrl::port_set(const char* szCommend, const char* szPara)
 		}
 		this->m_serial->setBytesize((serial::bytesize_t)atoi(szPara));
 	}
-	else if (0 == my_stricmp(szCommend, "SETPARITY"))
+	else if (0 == my_stricmp(szCommand, "SETPARITY"))
 	{
 		if (0 > atoi(szPara) || 4 < atoi(szPara))
 		{
@@ -289,7 +289,7 @@ int my_serial_ctrl::port_set(const char* szCommend, const char* szPara)
 		}
 		this->m_serial->setParity((serial::parity_t)atoi(szPara));
 	}
-	else if (0 == my_stricmp(szCommend, "SETSTOPBITS"))
+	else if (0 == my_stricmp(szCommand, "SETSTOPBITS"))
 	{
 		if (1 > atoi(szPara) || 3 < atoi(szPara))
 		{
@@ -298,7 +298,7 @@ int my_serial_ctrl::port_set(const char* szCommend, const char* szPara)
 		}
 		this->m_serial->setStopbits((serial::stopbits_t)atoi(szPara));
 	}
-	else if (0 == my_stricmp(szCommend, "SETFLOWCONTROL"))
+	else if (0 == my_stricmp(szCommand, "SETFLOWCONTROL"))
 	{
 		if (0 > atoi(szPara) || 2 < atoi(szPara))
 		{
@@ -307,7 +307,7 @@ int my_serial_ctrl::port_set(const char* szCommend, const char* szPara)
 		}
 		this->m_serial->setFlowcontrol((serial::flowcontrol_t)atoi(szPara));
 	}
-	else if (0 == my_stricmp(szCommend, "SETRTS"))
+	else if (0 == my_stricmp(szCommand, "SETRTS"))
 	{
 		//Must be open port first.
 		try
@@ -321,7 +321,7 @@ int my_serial_ctrl::port_set(const char* szCommend, const char* szPara)
 			printf("Unhandled Exception: %s\n", e.what());
 		}
 	}
-	else if (0 == my_stricmp(szCommend, "SETDTR"))
+	else if (0 == my_stricmp(szCommand, "SETDTR"))
 	{
 		//Must be open port first.
 		try
@@ -335,7 +335,7 @@ int my_serial_ctrl::port_set(const char* szCommend, const char* szPara)
 			printf("Unhandled Exception: %s\n", e.what());
 		}
 	}
-	else if (0 == my_stricmp(szCommend, "SETBREAK"))
+	else if (0 == my_stricmp(szCommand, "SETBREAK"))
 	{
 		//Must be open port first.
 		try

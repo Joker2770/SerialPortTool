@@ -63,7 +63,6 @@ public:
 	int port_set(const char* sArg1, const char* sArg2);
 	int send_data(const char* sData, bool bHex = false);
 	int receive_data(uint32_t sData, bool bHex = false);
-	//void my_sleep(unsigned long milliseconds);
 
 private:
 	serial::Serial *m_serial;
@@ -73,6 +72,7 @@ private:
 
 int AUX_split_str(string strSrc, STRVECTOR& vecDest, char cSep);
 int my_stricmp(const char*, const char*);
+//void my_sleep(unsigned long milliseconds);
 
 /*
 	comment: HexToAscii, e.g.: 0x12 0xAC 0x0D -> "12AC0D"
