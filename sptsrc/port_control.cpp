@@ -258,100 +258,89 @@ int my_serial_ctrl::port_set(const char* szCommand, const char* szPara)
 	{
 		return -1;
 	}
-	if (0 == my_stricmp(szCommand, "SETPORT")) this->m_serial->setPort(std::string(szPara));
-	else if (0 == my_stricmp(szCommand, "SETBAUDRATE")) this->m_serial->setBaudrate(atol(szPara));
-	else if (0 == my_stricmp(szCommand, "SETTIMEOUT"))
+
+	try
 	{
-		STRVECTOR vDes;
-		AUX_split_str(string(szPara), vDes, ',');
-		if (0 == my_stricmp(szPara, "") || 5 != vDes.size())
+		if (0 == my_stricmp(szCommand, "SETPORT")) this->m_serial->setPort(std::string(szPara));
+		else if (0 == my_stricmp(szCommand, "SETBAUDRATE")) this->m_serial->setBaudrate(atol(szPara));
+		else if (0 == my_stricmp(szCommand, "SETTIMEOUT"))
 		{
-			printf("e.g.: SETTIMEOUT:10000,250,0,250,0\n");
-			return -1;
+			STRVECTOR vDes;
+			AUX_split_str(string(szPara), vDes, ',');
+			if (0 == my_stricmp(szPara, "") || 5 != vDes.size())
+			{
+				printf("e.g.: SETTIMEOUT:10000,250,0,250,0\n");
+				return -1;
+			}
+			this->m_serial->setTimeout(atol(vDes[0].c_str()), atol(vDes[1].c_str()), atol(vDes[2].c_str()), atol(vDes[3].c_str()), atol(vDes[4].c_str()));
 		}
-		this->m_serial->setTimeout(atol(vDes[0].c_str()), atol(vDes[1].c_str()), atol(vDes[2].c_str()), atol(vDes[3].c_str()), atol(vDes[4].c_str()));
-	}
-	else if (0 == my_stricmp(szCommand, "SETBYTESIZE"))
-	{
-		if (5 > atoi(szPara) || 8 < atoi(szPara))
+		else if (0 == my_stricmp(szCommand, "SETBYTESIZE"))
 		{
-			printf("Parameter error\n");
-			return -1;
+			if (5 > atoi(szPara) || 8 < atoi(szPara))
+			{
+				printf("Parameter error\n");
+				return -1;
+			}
+			this->m_serial->setBytesize((serial::bytesize_t)atoi(szPara));
 		}
-		this->m_serial->setBytesize((serial::bytesize_t)atoi(szPara));
-	}
-	else if (0 == my_stricmp(szCommand, "SETPARITY"))
-	{
-		if (0 > atoi(szPara) || 4 < atoi(szPara))
+		else if (0 == my_stricmp(szCommand, "SETPARITY"))
 		{
-			printf("Parameter error\n");
-			return -1;
+			if (0 > atoi(szPara) || 4 < atoi(szPara))
+			{
+				printf("Parameter error\n");
+				return -1;
+			}
+			this->m_serial->setParity((serial::parity_t)atoi(szPara));
 		}
-		this->m_serial->setParity((serial::parity_t)atoi(szPara));
-	}
-	else if (0 == my_stricmp(szCommand, "SETSTOPBITS"))
-	{
-		if (1 > atoi(szPara) || 3 < atoi(szPara))
+		else if (0 == my_stricmp(szCommand, "SETSTOPBITS"))
 		{
-			printf("Parameter error\n");
-			return -1;
+			if (1 > atoi(szPara) || 3 < atoi(szPara))
+			{
+				printf("Parameter error\n");
+				return -1;
+			}
+			this->m_serial->setStopbits((serial::stopbits_t)atoi(szPara));
 		}
-		this->m_serial->setStopbits((serial::stopbits_t)atoi(szPara));
-	}
-	else if (0 == my_stricmp(szCommand, "SETFLOWCONTROL"))
-	{
-		if (0 > atoi(szPara) || 2 < atoi(szPara))
+		else if (0 == my_stricmp(szCommand, "SETFLOWCONTROL"))
 		{
-			printf("Parameter error\n");
-			return -1;
+			if (0 > atoi(szPara) || 2 < atoi(szPara))
+			{
+				printf("Parameter error\n");
+				return -1;
+			}
+			this->m_serial->setFlowcontrol((serial::flowcontrol_t)atoi(szPara));
 		}
-		this->m_serial->setFlowcontrol((serial::flowcontrol_t)atoi(szPara));
-	}
-	else if (0 == my_stricmp(szCommand, "SETRTS"))
-	{
-		//Must be open port first.
-		try
+		else if (0 == my_stricmp(szCommand, "SETRTS"))
 		{
+			//Must be open port first.
 			if (0 == atoi(szPara))
 				this->m_serial->setRTS(false);
 			else
 				this->m_serial->setRTS(true);
 		}
-		catch (exception &e) {
-			printf("Unhandled Exception: %s\n", e.what());
-		}
-	}
-	else if (0 == my_stricmp(szCommand, "SETDTR"))
-	{
-		//Must be open port first.
-		try
+		else if (0 == my_stricmp(szCommand, "SETDTR"))
 		{
+			//Must be open port first.
 			if (0 == atoi(szPara))
 				this->m_serial->setDTR(false);
 			else
 				this->m_serial->setDTR(true);
 		}
-		catch (exception &e) {
-			printf("Unhandled Exception: %s\n", e.what());
-		}
-	}
-	else if (0 == my_stricmp(szCommand, "SETBREAK"))
-	{
-		//Must be open port first.
-		try
+		else if (0 == my_stricmp(szCommand, "SETBREAK"))
 		{
+			//Must be open port first.
 			if (0 == atoi(szPara))
 				this->m_serial->setBreak(false);
 			else
 				this->m_serial->setBreak(true);
 		}
-		catch (exception &e) {
-			printf("Unhandled Exception: %s\n", e.what());
+		else
+		{
+			printf("Unsupported command!\n");
 		}
 	}
-	else
-	{
-		printf("Unsupported command!\n");
+	catch (exception &e) {
+		printf("Unhandled Exception: %s\n", e.what());
 	}
 
 	return 0;
