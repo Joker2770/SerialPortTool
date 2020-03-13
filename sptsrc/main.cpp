@@ -69,7 +69,7 @@ int main(int argc, char *argv[])
 	{
 		if (2 == argc && 0 == my_stricmp(argv[1], "--version"))
 		{
-			printf("20.20.03\n");
+			printf("20.20.04\n");
 			return 0;
 		}
 		else
