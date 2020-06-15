@@ -37,6 +37,7 @@ void print_usage()
 	printf("\tOPEN\n");
 	printf("\tCLOSE\n");
 	printf("\tSHOWSET\n");
+	printf("\tSHOWMORESET\n");
 	printf("\tSHOWPORT\n");
 	printf("\texit\n");
 	printf("\tquit\n");
@@ -69,7 +70,7 @@ int main(int argc, char *argv[])
 	{
 		if (2 == argc && (0 == my_stricmp(argv[1], "--version") || 0 == my_stricmp(argv[1], "-V")))
 		{
-			printf("20.20.04\n");
+			printf("20.20.05\n");
 			return 0;
 		}
 		else
