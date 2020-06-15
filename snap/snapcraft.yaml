@@ -7,7 +7,7 @@
 
  # icon: gui/icon.png
 
- grade: beta # must be 'stable' to release into candidate/stable channels
+ grade: stable # must be 'stable' to release into candidate/stable channels
  confinement: devmode # use 'strict' once you have the right plugs and slots
  base: core18
 
