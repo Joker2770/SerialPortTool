@@ -10,8 +10,8 @@ Required:
 ## Build on Linux
 ~~~
 git clone https://github.com/Joker2770/SerialPortTool.git
-git submodule update --init --recursive
 cd SerialPortTool
+git submodule update --init --recursive
 mkdir build
 cd build
 cmake ..
@@ -22,7 +22,7 @@ make
 ## Build on windows
 ~~~
 git clone https://github.com/Joker2770/SerialPortTool.git
-git submodule update --init --recursive
 cd SerialPortTool
+git submodule update --init --recursive
 ~~~
 build with cmake-gui.
