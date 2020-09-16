@@ -43,15 +43,16 @@ else()
 	target_link_libraries(serial setupapi)
 endif()
 
+## Include headers
+include_directories(serial/include)
+
 ## SerialPortTool 
 file(GLOB SerialPortTool_SRCS "./sptsrc/*.cpp" "./sptsrc/*.h")
 add_executable(${PROJECT_NAME} ${SerialPortTool_SRCS})
 add_dependencies(${PROJECT_NAME} serial)
 target_link_libraries(${PROJECT_NAME} serial)
 
-## Include headers
-include_directories(serial/include)
 if(UNIX)
-install(TARGETS SerialPortTool DESTINATION bin)
+install(TARGETS ${PROJECT_NAME} DESTINATION bin)
 endif()
 
