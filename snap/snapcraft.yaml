@@ -5,7 +5,7 @@
  description: |
    A simple command-line Cross-platform serial test tool, create by Joker2770< https://github.com/Joker2770/SerialPortTool >.
 
- icon: https://github.com/Joker2770/SerialPortTool/tree/master/snap/gui/icon.png
+ # icon: gui/icon.png
 
  grade: devel # must be 'stable' to release into candidate/stable channels
  confinement: devmode # use 'strict' once you have the right plugs and slots
