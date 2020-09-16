@@ -56,9 +56,11 @@ void print_usage()
 	printf("\tREAD:<DATALENGTH>\n");
 	printf("\tWRITEHEX:<DATA> (e.g.: WRITEHEX:313233)\n");
 	printf("\tREADHEX:<DATALENGTH>\n");
-	printf("\n(TIMEOUT:\n\tinter_byte_timeout, \n\tread_timeout_constant, \n\tread_timeout_multiplier, \n\twrite_timeout_constant, \n\twrite_timeout_multiplier\ne.g.: SETTIMEOUT:10000,1000,0,1000,0\n)\n");
-	printf("(parity_none = 0, parity_odd = 1, parity_even = 2, parity_mark = 3, parity_space = 4)\n");
-	printf("(flowcontrol_none = 0, flowcontrol_software = 1, flowcontrol_hardware = 2)\n");
+	printf("\n[<TIMEOUT>:\n\tinter_byte_timeout, \n\tread_timeout_constant, \n\tread_timeout_multiplier, \n\twrite_timeout_constant, \n\twrite_timeout_multiplier\ne.g.: SETTIMEOUT:10000,1000,0,1000,0\n]\n");
+	printf("[<BYTESIZE>(5~8): fivebits = 5, sixbits = 6, sevenbits = 7, eightbits = 8]\n");
+	printf("[<PARITY>(0~4): parity_none = 0, parity_odd = 1, parity_even = 2, parity_mark = 3, parity_space = 4]\n");
+	printf("[<STOPBITS>(1~3): stopbits_one = 1, stopbits_two = 2, stopbits_one_point_five = 3]\n");
+	printf("[<FLOWCONTROL>(0~2): flowcontrol_none = 0, flowcontrol_software = 1, flowcontrol_hardware = 2]\n");
 	printf("===================command===================\n");
 }
 
@@ -70,7 +72,7 @@ int main(int argc, char *argv[])
 	{
 		if (2 == argc && (0 == my_stricmp(argv[1], "--version") || 0 == my_stricmp(argv[1], "-V")))
 		{
-			printf("20.20.06\n");
+			printf("20.20.09\n");
 			return 0;
 		}
 		else

@@ -243,7 +243,7 @@ int my_serial_ctrl::show_port_more_set()
 	printf("---------------------------------------------\n");
 	printf("\tCTS: %d\n\tDSR: %d\n\tCD: %d\n\tRI: %d\n",
 
-		true == this->m_serial->getCTS()?1:0,
+		true == this->m_serial->getCTS() ? 1 : 0,
 		true == this->m_serial->getDSR() ? 1 : 0,
 		true == this->m_serial->getCD() ? 1 : 0,
 		true == this->m_serial->getRI() ? 1 : 0

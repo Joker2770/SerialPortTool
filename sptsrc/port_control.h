@@ -39,7 +39,7 @@
 #include <windows.h>
 #else
 #include <unistd.h>
-#include <strings.h>
+#include <string.h>
 #endif
 
 #include <string.h>

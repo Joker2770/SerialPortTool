@@ -52,7 +52,12 @@ add_executable(${PROJECT_NAME} ${SerialPortTool_SRCS})
 add_dependencies(${PROJECT_NAME} serial)
 target_link_libraries(${PROJECT_NAME} serial)
 
+# Install
 if(UNIX)
-install(TARGETS ${PROJECT_NAME} DESTINATION bin)
+	set(CMAKE_INSTALL_PREFIX /usr/local)
+	install(TARGETS ${PROJECT_NAME} DESTINATION bin)
+elseif(WIN32)
+	set(CMAKE_INSTALL_PREFIX "C:/Program Files (x86)/")
+	install(TARGETS ${PROJECT_NAME} DESTINATION SerialPortTool)
 endif()
 
