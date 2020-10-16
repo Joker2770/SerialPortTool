@@ -133,7 +133,7 @@ int main(int argc, char *argv[])
 		}
 		else if (2 == vDest.size() && 0 != my_stricmp(vDest[0].c_str(), "") && 0 != my_stricmp(vDest[1].c_str(), ""))
 		{
-			if ((nullptr != strstr(vDest[0].c_str(), "SET")) || (nullptr != strstr(vDest[0].c_str(), "set")))
+			if ((NULL != strstr(vDest[0].c_str(), "SET")) || (NULL != strstr(vDest[0].c_str(), "set")))
 				iret = pS->port_set(vDest[0].c_str(), vDest[1].c_str());
 			else if (0 == my_stricmp(vDest[0].c_str(), "WRITE"))
 				iret = pS->send_data(vDest[1].c_str());
@@ -151,7 +151,11 @@ int main(int argc, char *argv[])
 
 	}
 
-	if (nullptr != pS) delete pS;
+	if (NULL != pS) 
+	{
+		delete pS;
+		pS = NULL;
+	}
 
 	return 0;
 }

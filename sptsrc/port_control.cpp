@@ -116,7 +116,11 @@ my_serial_ctrl::my_serial_ctrl()
 
 my_serial_ctrl::~my_serial_ctrl()
 {
-	if (nullptr != this->m_serial) delete this->m_serial;
+	if (NULL != this->m_serial) 
+	{
+		delete this->m_serial;
+		this->m_serial = NULL;
+	}
 }
 
 // void my_sleep(unsigned long milliseconds) {
@@ -254,7 +258,7 @@ int my_serial_ctrl::show_port_more_set()
 
 int my_serial_ctrl::port_set(const char* szCommand, const char* szPara)
 {
-	if (nullptr == szCommand || nullptr == szPara || 0 == my_stricmp(szCommand, "") || 0 == my_stricmp(szPara, ""))
+	if (NULL == szCommand || NULL == szPara || 0 == my_stricmp(szCommand, "") || 0 == my_stricmp(szPara, ""))
 	{
 		return -1;
 	}
