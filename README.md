@@ -1,5 +1,5 @@
 # SerialPortTool
-A  Cross-platform serial test tool.
+A Cross-platform serial test tool.
 
 ## Dependencies
 Required:
