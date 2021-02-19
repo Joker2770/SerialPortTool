@@ -45,12 +45,12 @@
 #include <string.h>
 #include <stdlib.h>
 
-
 using namespace std;
 typedef vector<string> STRVECTOR;
 typedef string::size_type STRPOS;
 
-class my_serial_ctrl {
+class my_serial_ctrl
+{
 public:
 	my_serial_ctrl();
 	~my_serial_ctrl();
@@ -60,18 +60,16 @@ public:
 	int close_port(void);
 	void show_port_set(void);
 	int show_port_more_set(void);
-	int port_set(const char* sArg1, const char* sArg2);
-	int send_data(const char* sData, bool bHex = false);
+	int port_set(const char *sArg1, const char *sArg2);
+	int send_data(const char *sData, bool bHex = false);
 	int receive_data(uint32_t sData, bool bHex = false);
 
 private:
 	serial::Serial *m_serial;
-
 };
 
-
-int AUX_split_str(string strSrc, STRVECTOR& vecDest, char cSep);
-int my_stricmp(const char*, const char*);
+int AUX_split_str(string strSrc, STRVECTOR &vecDest, char cSep);
+int my_stricmp(const char *, const char *);
 //void my_sleep(unsigned long milliseconds);
 
 /*
@@ -86,7 +84,7 @@ void HexToAscii(unsigned char *pSrc, unsigned char *pDest, unsigned int nLen);
 
 /*
 comment: StringToHex, e.g.: "12AC0D" -> 0x12 0xAC 0x0D
-para£º
+paraï¿½ï¿½
 	pSrc(in): source string. 
 	pDest(out): destination string. 
 	uilen(out): count of characters of destination string. 
@@ -96,4 +94,3 @@ caution: The source string only '0-9 a-z A-Z' include, that is can not include '
 int StringToHex(char *pSrc, unsigned char *pDest, unsigned int *uilen);
 
 #endif // __PORT_CONTROL_H__
-

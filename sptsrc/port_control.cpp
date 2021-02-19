@@ -29,25 +29,24 @@
 * SOFTWARE.
 */
 
-
 #include "port_control.h"
 
-int AUX_split_str(string strSrc, STRVECTOR& vecDest, char cSep)
+int AUX_split_str(string strSrc, STRVECTOR &vecDest, char cSep)
 {
-	//Current 'cSep' position and previous 'cSep' position. 
+	//Current 'cSep' position and previous 'cSep' position.
 	STRPOS pos = 0;
 	STRPOS prev_pos = 0;
-	//Search one by one. 
+	//Search one by one.
 	while ((pos = strSrc.find_first_of(cSep, pos)) != string::npos)
 	{
 		string strTemp = strSrc.substr(prev_pos, pos - prev_pos);
 		vecDest.push_back(strTemp);
 		prev_pos = ++pos;
 	}
-	//Even behind 'cSep' is NULL, as a NULL string. 
+	//Even behind 'cSep' is NULL, as a NULL string.
 	if (!strSrc.empty())
 		vecDest.push_back(&strSrc[prev_pos]);
-	//Return the count of the string. 
+	//Return the count of the string.
 	return vecDest.size();
 }
 
@@ -55,28 +54,32 @@ void HexToAscii(unsigned char *pSrc, unsigned char *pDest, unsigned int nLen)
 {
 	unsigned char Nibble[2];
 	unsigned int i, j;
-	for (i = 0; i < nLen; i++) {
+	for (i = 0; i < nLen; i++)
+	{
 		Nibble[0] = (pSrc[i] & 0xF0) >> 4;
 		Nibble[1] = pSrc[i] & 0x0F;
-		for (j = 0; j < 2; j++) {
-			if (Nibble[j] < 10) {
+		for (j = 0; j < 2; j++)
+		{
+			if (Nibble[j] < 10)
+			{
 				Nibble[j] += 0x30;
 			}
-			else {
+			else
+			{
 				if (Nibble[j] < 16)
 					Nibble[j] = Nibble[j] - 10 + 'A';
 			}
 			*pDest++ = Nibble[j];
-		}               // for (int j = ...)
-	}           // for (int i = ...)
+		} // for (int j = ...)
+	}	  // for (int i = ...)
 }
 
-int StringToHex(char *pSrc, unsigned char *cbuf, unsigned int* nlen)
+int StringToHex(char *pSrc, unsigned char *cbuf, unsigned int *nlen)
 {
 	*nlen = 0;
 
 	unsigned char high, low;
-	int idx, ii = 0;
+	unsigned int idx, ii = 0;
 	unsigned int itlen = (unsigned int)(strlen(pSrc) - (strlen(pSrc) % 2));
 	for (idx = 0; idx < itlen; idx += 2)
 	{
@@ -116,7 +119,7 @@ my_serial_ctrl::my_serial_ctrl()
 
 my_serial_ctrl::~my_serial_ctrl()
 {
-	if (NULL != this->m_serial) 
+	if (NULL != this->m_serial)
 	{
 		delete this->m_serial;
 		this->m_serial = NULL;
@@ -131,14 +134,14 @@ my_serial_ctrl::~my_serial_ctrl()
 // #endif
 // }
 
-int my_stricmp(const char* str1, const char* str2) {
+int my_stricmp(const char *str1, const char *str2)
+{
 #ifdef _WIN32
 	return _stricmp(str1, str2); // 100 ms
 #else
 	return strcasecmp(str1, str2); // 100 ms
 #endif
 }
-
 
 void my_serial_ctrl::enumerate_ports()
 {
@@ -150,7 +153,7 @@ void my_serial_ctrl::enumerate_ports()
 	while (iter != devices_found.end())
 	{
 		serial::PortInfo device = *iter++;
-		i++; 
+		i++;
 		printf("%d. Port - <%s>\n\tDescription: %s\n\tHardware_id: %s\n\n", i, device.port.c_str(), device.description.c_str(), device.hardware_id.c_str());
 	}
 	printf("Total %d ports could be connect. \n", i);
@@ -171,11 +174,13 @@ int my_serial_ctrl::open_port()
 	{
 		printf("[%s] is not open! \n", szPort);
 
-		try {
+		try
+		{
 			this->m_serial->open();
 			printf("Open ...\n");
 		}
-		catch (exception &e) {
+		catch (exception &e)
+		{
 			printf("Unhandled Exception: %s\n", e.what());
 		}
 
@@ -195,11 +200,13 @@ int my_serial_ctrl::close_port()
 	{
 		printf("Port is open!\n");
 
-		try {
+		try
+		{
 			this->m_serial->close();
 			printf("Close ...\n");
 		}
-		catch (exception &e) {
+		catch (exception &e)
+		{
 			printf("Unhandled Exception: %s\n", e.what());
 		}
 
@@ -217,23 +224,22 @@ void my_serial_ctrl::show_port_set()
 {
 	printf("---------------------------------------------\n");
 	printf("\tPORT: %s\n\tBAUDRATE: %u\n\tTIMEOUT: %u, %u, %u, %u, %u\n\tBYTESIZE: %d\n\tPARITY: %d\n\tSTOPBITS: %d\n\tFLOWCONTROL: %d\n",
-		this->m_serial->getPort().c_str(),
-		this->m_serial->getBaudrate(),
-		//Number of milliseconds between bytes received to timeout on. 
-		this->m_serial->getTimeout().inter_byte_timeout,
-		//A constant number of milliseconds to wait after calling read. 
-		this->m_serial->getTimeout().read_timeout_constant,
-		//A multiplier against the number of requested bytes to wait after calling read. 
-		this->m_serial->getTimeout().read_timeout_multiplier,
-		//A constant number of milliseconds to wait after calling write. 
-		this->m_serial->getTimeout().write_timeout_constant,
-		//A multiplier against the number of requested bytes to wait after calling write. 
-		this->m_serial->getTimeout().write_timeout_multiplier,
-		this->m_serial->getBytesize(),
-		this->m_serial->getParity(),
-		this->m_serial->getStopbits(),
-		this->m_serial->getFlowcontrol()
-	);
+		   this->m_serial->getPort().c_str(),
+		   this->m_serial->getBaudrate(),
+		   //Number of milliseconds between bytes received to timeout on.
+		   this->m_serial->getTimeout().inter_byte_timeout,
+		   //A constant number of milliseconds to wait after calling read.
+		   this->m_serial->getTimeout().read_timeout_constant,
+		   //A multiplier against the number of requested bytes to wait after calling read.
+		   this->m_serial->getTimeout().read_timeout_multiplier,
+		   //A constant number of milliseconds to wait after calling write.
+		   this->m_serial->getTimeout().write_timeout_constant,
+		   //A multiplier against the number of requested bytes to wait after calling write.
+		   this->m_serial->getTimeout().write_timeout_multiplier,
+		   this->m_serial->getBytesize(),
+		   this->m_serial->getParity(),
+		   this->m_serial->getStopbits(),
+		   this->m_serial->getFlowcontrol());
 	printf("---------------------------------------------\n");
 }
 
@@ -247,16 +253,15 @@ int my_serial_ctrl::show_port_more_set()
 	printf("---------------------------------------------\n");
 	printf("\tCTS: %d\n\tDSR: %d\n\tCD: %d\n\tRI: %d\n",
 
-		true == this->m_serial->getCTS() ? 1 : 0,
-		true == this->m_serial->getDSR() ? 1 : 0,
-		true == this->m_serial->getCD() ? 1 : 0,
-		true == this->m_serial->getRI() ? 1 : 0
-	);
+		   true == this->m_serial->getCTS() ? 1 : 0,
+		   true == this->m_serial->getDSR() ? 1 : 0,
+		   true == this->m_serial->getCD() ? 1 : 0,
+		   true == this->m_serial->getRI() ? 1 : 0);
 	printf("---------------------------------------------\n");
 	return 0;
 }
 
-int my_serial_ctrl::port_set(const char* szCommand, const char* szPara)
+int my_serial_ctrl::port_set(const char *szCommand, const char *szPara)
 {
 	if (NULL == szCommand || NULL == szPara || 0 == my_stricmp(szCommand, "") || 0 == my_stricmp(szPara, ""))
 	{
@@ -265,8 +270,10 @@ int my_serial_ctrl::port_set(const char* szCommand, const char* szPara)
 
 	try
 	{
-		if (0 == my_stricmp(szCommand, "SETPORT")) this->m_serial->setPort(std::string(szPara));
-		else if (0 == my_stricmp(szCommand, "SETBAUDRATE")) this->m_serial->setBaudrate(atol(szPara));
+		if (0 == my_stricmp(szCommand, "SETPORT"))
+			this->m_serial->setPort(std::string(szPara));
+		else if (0 == my_stricmp(szCommand, "SETBAUDRATE"))
+			this->m_serial->setBaudrate(atol(szPara));
 		else if (0 == my_stricmp(szCommand, "SETTIMEOUT"))
 		{
 			STRVECTOR vDes;
@@ -343,14 +350,15 @@ int my_serial_ctrl::port_set(const char* szCommand, const char* szPara)
 			printf("Unsupported command!\n");
 		}
 	}
-	catch (exception &e) {
+	catch (exception &e)
+	{
 		printf("Unhandled Exception: %s\n", e.what());
 	}
 
 	return 0;
 }
 
-int my_serial_ctrl::send_data(const char* szData, bool b_hex)
+int my_serial_ctrl::send_data(const char *szData, bool b_hex)
 {
 	try
 	{
@@ -359,13 +367,13 @@ int my_serial_ctrl::send_data(const char* szData, bool b_hex)
 		uint32_t ilen = 0;
 		if (b_hex)
 		{
-			int iret = StringToHex((char*)szData, szDest, &ilen);
+			int iret = StringToHex((char *)szData, szDest, &ilen);
 			if (0 != iret)
-				throw - 1;
+				throw -1;
 			size_t bytes_wrote = this->m_serial->write(szDest, ilen);
 			char szTmp[1024 * 100] = "";
 			memset(szTmp, 0, sizeof(szTmp));
-			memcpy(szTmp, szData, bytes_wrote*2);
+			memcpy(szTmp, szData, bytes_wrote * 2);
 			printf(">>(hex)%s\n", szTmp);
 		}
 		else
@@ -377,7 +385,8 @@ int my_serial_ctrl::send_data(const char* szData, bool b_hex)
 			printf(">>(visual)%s\n", szTmp);
 		}
 	}
-	catch (exception &e) {
+	catch (exception &e)
+	{
 		printf("Unhandled Exception: %s\n", e.what());
 	}
 	catch (int erret)
@@ -416,7 +425,8 @@ int my_serial_ctrl::receive_data(uint32_t ulength, bool b_hex)
 			printf("\n");
 		}
 	}
-	catch (exception &e) {
+	catch (exception &e)
+	{
 		printf("Unhandled Exception: %s\n", e.what());
 	}
 

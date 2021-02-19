@@ -85,7 +85,6 @@ int main(int argc, char *argv[])
 		printf("You can type 'HELP' to show usable commands!\n");
 	}
 
-
 	int iret = 0;
 	while (true)
 	{
@@ -95,13 +94,14 @@ int main(int argc, char *argv[])
 
 		try
 		{
-			#if defined(_WIN32) && !defined(__MINGW32__)
-				iret = scanf_s("%s", szCommand, 128);
-			#else
-				iret = scanf("%s", szCommand);
-			#endif
+#ifdef _MSC_VER
+			iret = scanf_s("%s", szCommand, 128);
+#else
+			iret = scanf("%s", szCommand);
+#endif
 		}
-		catch (exception &e) {
+		catch (exception &e)
+		{
 			printf("Unhandled Exception: %s\n", e.what());
 		}
 
@@ -148,10 +148,9 @@ int main(int argc, char *argv[])
 		}
 		else
 			printf("Command error!\n");
-
 	}
 
-	if (NULL != pS) 
+	if (NULL != pS)
 	{
 		delete pS;
 		pS = NULL;
