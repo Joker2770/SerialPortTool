@@ -121,6 +121,9 @@ my_serial_ctrl::~my_serial_ctrl()
 {
 	if (NULL != this->m_serial)
 	{
+		if (this->m_serial->isOpen())
+			this->m_serial->close();
+
 		delete this->m_serial;
 		this->m_serial = NULL;
 	}
