@@ -1,4 +1,7 @@
 # SerialPortTool
+
+[![serialporttool](https://snapcraft.io/serialporttool/badge.svg)](https://snapcraft.io/serialporttool)
+
 A Cross-platform serial test tool.
 
 ## Dependencies
