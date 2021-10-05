@@ -8,7 +8,7 @@
 /* 
 * MIT License
 * 
-* Copyright (c) 2020 Joker2770
+* Copyright (c) 2020-2021 Joker2770
 * 
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -84,7 +84,7 @@ void HexToAscii(unsigned char *pSrc, unsigned char *pDest, unsigned int nLen);
 
 /*
 comment: StringToHex, e.g.: "12AC0D" -> 0x12 0xAC 0x0D
-para��
+para:
 	pSrc(in): source string. 
 	pDest(out): destination string. 
 	uilen(out): count of characters of destination string. 
