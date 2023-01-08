@@ -72,7 +72,7 @@ int main(int argc, char *argv[])
 	{
 		if (2 == argc && (0 == my_stricmp(argv[1], "--version") || 0 == my_stricmp(argv[1], "-V")))
 		{
-			printf("20.22.05\n");
+			printf("20.23.01\n");
 			return 0;
 		}
 		else
@@ -85,13 +85,13 @@ int main(int argc, char *argv[])
 		printf("You can type 'HELP' to show usable commands!\n");
 	}
 
-	int iret = 0;
 	while (true)
 	{
 		printf(">>");
 		char szCommand[128] = "";
 		memset(szCommand, 0, sizeof(szCommand));
 
+		int iret = 0;
 		try
 		{
 #ifdef _MSC_VER
