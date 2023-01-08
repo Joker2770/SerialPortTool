@@ -8,7 +8,7 @@
 /* 
 * MIT License
 * 
-* Copyright (c) 2020-2021 Joker2770
+* Copyright (c) 2020-2023 Joker2770
 * 
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -53,6 +53,8 @@ class my_serial_ctrl
 {
 public:
 	my_serial_ctrl();
+	my_serial_ctrl(const my_serial_ctrl &msc);
+	my_serial_ctrl& operator=(const my_serial_ctrl &msc);
 	~my_serial_ctrl();
 
 	void enumerate_ports(void);

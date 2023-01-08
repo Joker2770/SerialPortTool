@@ -8,7 +8,7 @@
 /* 
 * MIT License
 * 
-* Copyright (c) 2020-2021 Joker2770
+* Copyright (c) 2020-2023 Joker2770
 * 
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -112,7 +112,7 @@ int StringToHex(char *pSrc, unsigned char *cbuf, unsigned int *nlen)
 
 my_serial_ctrl::my_serial_ctrl()
 {
-	this->m_serial = new serial::Serial();
+	this->m_serial = new serial::Serial;
 	serial::Timeout timeout = serial::Timeout::simpleTimeout(1000);
 	this->m_serial->setTimeout(timeout);
 }
